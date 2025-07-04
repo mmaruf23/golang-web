@@ -1,21 +1,24 @@
 package main
 
-import "net/http"
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
 func main() {
-  
-  var handler http.HandlerFunc = func(writer http.ResponseWriter, request *http.Request) {
-    fmt.Fprint(writer, "Hello World")
-  }
-  server := http.Server{
-    Addr: "localhost:8009",
-    Handler: handler,
-  }
-  
-  err := server.ListenAndServe()
-  if err != nil {
-    panic(err)
-  }
-}
 
+	mux := http.NewServeMux()
+	mux.HandleFunc("/products", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "All Products")
+	})
+	mux.HandleFunc("/products/1", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "Product with id = 1")
+	})
+
+	server := http.Server{
+		Addr:    "localhost:8080",
+		Handler: mux,
+	}
+
+	server.ListenAndServe()
+}
